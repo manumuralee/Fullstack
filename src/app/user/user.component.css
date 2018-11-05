@@ -1,0 +1,36 @@
+
+.bg-light-1 {
+    background-color: #e6e8ea!important;
+  }
+
+  .normal-hr {
+    border:none;
+    border-top:2px solid #6c757d !important;
+    color:#fff;
+    background-color:#fff;
+    height:1px;   
+  }
+
+  .dotted-hr {
+    border:none;
+    border-top:2px dotted #6c757d !important;
+    color:#fff;
+    background-color:#fff;
+    height:1px;    
+  }
+
+  .task-btn-primary {
+    color: #fff;
+    background-color: #3d6794 !important;    
+}
+
+.task-btn-danger {
+  color: #fff;
+  background-color: #a57d81 !important;
+  border-color: #a57d81 !important;
+}
+
+
+
+ 
+  

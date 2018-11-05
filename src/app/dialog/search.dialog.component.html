@@ -1,0 +1,87 @@
+<div class="modal-dialog ">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">{{title}}</h4>
+            <button type="button" class="close" (click)="close()">&times;</button>
+        </div>
+        <div class="modal-body" *ngIf="searchType === 'user'">
+            <div class="input-group">
+                <input type="text" class="form-control" id="userName" [(ngModel)]="userName" name="userName">
+            </div>
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>User</th>
+                            <th>Employee ID</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of (users | userSearch : userName) let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{user.firstName + ' ' + user.lastName}}</td>
+                            <td>{{ user.employeeId }}</td>
+                            <td>
+                                <button id="buttonconfirmUser" (click)="confirmUser(user)" class="btn btn-primary btn-sm" type="button">Select</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-body" *ngIf="searchType === 'project'">
+            <div class="input-group">
+                <input type="text" class="form-control" id="projectName" [(ngModel)]="projectName" name="projectName">
+            </div>
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Project</th>
+                            <th>Priority</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let project of (projects  | projectSearch : projectName) let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{project.projectName}}</td>
+                            <td>{{project.priority }}</td>
+                            <td>
+                                <button id="buttonConfirmProject" (click)="confirmProject(project)" class="btn btn-primary btn-sm" type="button">Select</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-body" *ngIf="searchType === 'parent'">            
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Parent</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let parent of parents let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{parent.parentName}}</td>
+                            <td>
+                                <button id="buttonConfirmParent" (click)="confirmParent(parent)" class="btn btn-primary btn-sm" type="button">Select</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="buttonCancel" class="btn btn-default btn-md" (click)="cancel()">Cancel</button>
+        </div>
+    </div>
+</div>

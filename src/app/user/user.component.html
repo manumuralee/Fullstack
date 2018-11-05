@@ -1,0 +1,95 @@
+<div [hidden]="submitted" class="pb-2">
+  <form name="form" (ngSubmit)="userForm.form.valid && onSubmit()" #userForm="ngForm" novalidate>
+    <div class="form-group row alertBox" *ngIf="successFlag > 0">
+      <div [hidden]="successFlag !== 1" class="alert alert-success col-11">
+        {{successMessage}}
+      </div>
+      <div [hidden]="successFlag !== 2" class="alert alert-danger col-11">
+        {{successMessage}}
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="firstName" class="col-2 col-form-label">First Name</label>
+      <div class="col-6">
+        <input type="text" class="form-control" id="firstName" [(ngModel)]="model.firstName" maxlength="60" name="firstName" required
+          #firstName="ngModel" [ngClass]="{ 'is-invalid': userForm.submitted && firstName.invalid }">
+        <!--div [hidden]="firstName.valid || firstName.pristine" class="alert alert-danger">
+            Name is required
+          </div-->
+        <div *ngIf="userForm.submitted && firstName.invalid" class="invalid-feedback">
+          <div *ngIf="firstName.errors.required">First Name is required</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="lastName" class="col-2 col-form-label">Last Name</label>
+      <div class="col-6">
+        <input type="text" class="form-control" id="lastName" [(ngModel)]="model.lastName" maxlength="60" name="lastName" required
+          #lastName="ngModel" [ngClass]="{ 'is-invalid': userForm.submitted && lastName.invalid }">
+        <div *ngIf="userForm.submitted && lastName.invalid" class="invalid-feedback">
+          <div *ngIf="lastName.errors.required">Last Name is required</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="employeeId" class="col-2 col-form-label">Employee Id</label>
+      <div class="col-6">
+        <input type="text" class="form-control" id="employeeId" [(ngModel)]="model.employeeId" name="employeeId" required #employeeId="ngModel"
+          [ngClass]="{ 'is-invalid': userForm.submitted && employeeId.invalid }">
+        <div *ngIf="userForm.submitted && employeeId.invalid" class="invalid-feedback">
+          <div *ngIf="employeeId.errors.required">Employee Id is required</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-4">
+      <button *ngIf="!editMode" type="submit" class="btn btn-primary task-btn-primary" id="SubmitVal">Submit</button>&nbsp;
+      <button *ngIf="editMode" id="updateButton" type="submit" class="btn btn-primary task-btn-primary">Update</button>&nbsp;
+      <button type="button" id="resetButton" class="btn btn-default" (click)="newUser(); userForm.reset()">Reset</button>
+    </div>
+  </form>
+</div>
+<div class="row pb-2 pt-2">
+  <div class="col-8">
+    <hr class="normal-hr" />
+  </div>
+</div>
+<div class="pt-2">
+  <div class="row pt-2 pb-4">
+    <div class="col-4">
+      <input type="text" class="form-control" id="searchText" [(ngModel)]="searchText" maxlength="60" name="searchText" placeholder="Search User">
+    </div>
+    <div class="col-4 text-right">
+      <label class="col-form-label pl-3 pr-2 float-left">Sort</label>
+      <button type="button" id="sortfirstName" class="btn btn-primary task-btn-primary" (click)="sortBy('firstName')">First Name</button>&nbsp;
+      <button type="button" id="sortlastName" class="btn btn-primary task-btn-primary" (click)="sortBy('lastName')">Last Name</button>&nbsp;
+      <button type="button" id="sortemployeeId" class="btn btn-primary task-btn-primary float-right" (click)="sortBy('employeeId')">Id</button>&nbsp;
+    </div>
+  </div>
+  <div *ngFor="let user of users | userSearch : searchText | userSort : sortingType : sortOrder">
+    <div class="row pt-2">
+      <div class="col-7">
+        <div class="bg-light-1 rounded p-2 mb-1">{{user.firstName}}</div>
+        <div class="bg-light-1 rounded p-2 mb-1">{{user.lastName}}</div>
+        <div class="bg-light-1 rounded p-2 mb-1">{{user.employeeId}}</div>
+      </div>
+      <div class="col-1">
+        <div class="">
+          <div class="float-right pb-2 mb-1">
+            <button type="button pl-1 pr-1" class="btn btn-primary task-btn-primary btn-sm editUserButton" (click)="editUser($event, user, i)">&nbsp;&nbsp;Edit&nbsp;&nbsp;</button>
+          </div>
+          <div class="float-right mb-1">
+            <button type="button" class="btn task-btn-danger btn-sm deleteUserButton" (click)="deleteUser($event, user, i)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row pt-2">
+      <div class="col-8">
+        <hr class="dotted-hr" />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,131 @@
+<div [hidden]="submitted">
+  <form name="form" (ngSubmit)="taskForm.form.valid && onSubmit()" #taskForm="ngForm" novalidate>
+    <div class="form-group row alertBox" *ngIf="successFlag > 0">
+      <div [hidden]="successFlag !== 1" class="alert alert-success col-11">
+        {{successMessage}}
+      </div>
+      <div [hidden]="successFlag !== 2" class="alert alert-danger col-11">
+        {{successMessage}}
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="selectedProject" class="col-2 col-form-label">Project</label>
+      <div class="input-group col-6">
+        <input class="form-control py-2" type="search" value="" id="selectedProject" name="selectedProject" [(ngModel)]="selectedProject"
+          #selectedProjectModel="ngModel" readonly required [ngClass]="{ 'is-invalid': taskForm.submitted && taskName.invalid }">
+        <span class="input-group-append">
+          <button class="btn btn-outline-secondary" id="searchProjectButton" type="button" (click)="searchProject()" [disabled]="editMode ? true : false">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+        <div *ngIf="taskForm.submitted && selectedProjectModel.invalid" class="invalid-feedback">
+          <div *ngIf="selectedProjectModel.errors.required">Project is required</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="taskName" class="col-2 col-form-label">Task Name</label>
+      <div class="col-6">
+        <input type="text" class="form-control" id="taskName" [(ngModel)]="model.taskName" maxlength="30" name="taskName" required
+          #taskName="ngModel" [ngClass]="{ 'is-invalid': taskForm.submitted && taskName.invalid }">
+        <!--div [hidden]="taskName.valid || taskName.pristine" class="alert alert-danger">
+            Name is required
+          </div-->
+        <div *ngIf="taskForm.submitted && taskName.invalid" class="invalid-feedback">
+          <div *ngIf="taskName.errors.required">Task Name is required</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="isParentTask" class="col-2 col-form-label">&nbsp;</label>
+      <div class="col-2 ml-3 mr-1 pt-2 pb-1 pr-0 pl-0">
+        <label>
+          <input type="checkbox" #isAParentTask="ngModel" name="isParentTask" class="checkbox" id="isParentTask" [(ngModel)]="isParentTask"
+            (ngModelChange)="oncheckParentChange(isParentTask ? true : false)" [disabled]="editMode ? true : false"> Parent Task</label>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="priority" class="col-2 col-form-label">Priority</label>
+      <div class="col-6">
+        <div>
+          <div class="float-left">0</div>
+          <div class="float-right">30</div>
+        </div>
+        <input type="range" min="0" max="30" class="form-control" id="priority" [(ngModel)]="model.priority" name="priority" required
+          #priority="ngModel" [ngClass]="{ 'is-invalid': taskForm.submitted && priority.invalid }" [disabled]="isAParentTask.value ? true : false">
+        <!--div [hidden]="priority.valid || priority.pristine" class="alert alert-danger">
+            Priority is required
+          </div-->
+        <div *ngIf="!isAParentTask.value && taskForm.submitted && priority.invalid" class="invalid-feedback">
+          <div *ngIf="priority.errors.required">Priority is required</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="selectedParent" class="col-2 col-form-label">Parent Task</label>
+      <div class="input-group col-6">
+        <input class="form-control py-2" type="search" value="" id="selectedParent" name="selectedParent" [(ngModel)]="selectedParent"
+          readonly>
+        <span class="input-group-append">
+          <button class="btn btn-outline-secondary" id="searchParentButton" type="button" (click)="searchParent()" [disabled]="isAParentTask.value ? true : false">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="startDate" class="col-2 col-form-label">Start Date</label>
+      <div class="col-2 pr-0">
+        <input type="date" class="form-control" id="startDate" [(ngModel)]="iStartDate" maxlength="10" minlength="10" name="iStartDate"
+          required #startDate="ngModel" placeholder="dd/mm/yyyy" [ngClass]="{ 'is-invalid': taskForm.submitted && startDate.invalid }"
+          [disabled]="isAParentTask.value ? true : false" value="{{iStartDate}}">
+        <!--div [hidden]="startDate.valid || startDate.pristine" class="alert alert-danger">
+              Start Date is required
+            </div-->
+        <div *ngIf="!isAParentTask.value && taskForm.submitted && startDate.invalid" class="invalid-feedback">
+          <div *ngIf="startDate.errors.required">Start Date is required</div>
+          <div *ngIf="endDate.errors.minlength">Invalid Date</div>
+          <div *ngIf="endDate.errors.maxlength">Invalid Date</div>
+        </div>
+      </div>
+      <label for="endDate" class="col-2 col-form-label text-right">End Date</label>
+      <div class="col-2 pl-0">
+        <input type="date" class="form-control" id="endDate" [(ngModel)]="iEndDate" maxlength="10" minlength="10" name="iEndDate"
+          required #endDate="ngModel" min="{{taskForm.value.startDate}}" placeholder="dd/mm/yyyy" [ngClass]="{ 'is-invalid': taskForm.submitted && endDate.invalid }"
+          [disabled]="isAParentTask.value ? true : false" value="{{iEndDate}}">
+
+        <!--div [hidden]="endDate.valid || endDate.pristine" class="alert alert-danger">
+              End Date is required
+            </div-->
+        <div *ngIf="!isAParentTask.value && taskForm.submitted && endDate.invalid" class="invalid-feedback">
+          <div *ngIf="endDate.errors.required"> End Date is required</div>
+          <div *ngIf="endDate.errors.minlength">Invalid Date</div>
+          <div *ngIf="endDate.errors.maxlength">Invalid Date</div>
+          <div *ngIf="endDate.errors.min">Lower than Start Date</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="employeeId" class="col-2 col-form-label">Manager</label>
+      <div class="input-group col-6">
+        <input class="form-control py-2"  type="search" value="" id="selectedUser" name="selectedUser" [(ngModel)]="selectedUser"
+          readonly>
+        <span class="input-group-append">
+          <button class="btn btn-outline-secondary" id="searchUserButton" type="button" (click)="searchUser()" [disabled]="isAParentTask.value ? true : false">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <div class="pt-4">
+      <button *ngIf="!editMode" type="submit" class="btn btn-primary task-btn-primary" id="submitButton">Submit</button>&nbsp;
+      <button *ngIf="editMode" type="submit" class="btn btn-primary task-btn-primary" id="updateButton">Update</button>&nbsp;
+      <button type="button" class="btn btn-default" (click)="newTask(); taskForm.reset()" id="resetButton">Reset</button>
+    </div>
+  </form>
+</div>

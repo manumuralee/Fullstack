@@ -1,0 +1,77 @@
+<div>
+    <form name="form" #searchForm="ngForm" novalidate>
+        <div class="row form-group pb-0">
+            <div class="col-5">
+                <div class="row form-group">
+                    <label for="taskName" class="col-2 col-form-label">Project</label>
+                    <div class="input-group col-10">
+                        <input type="text" class="form-control" id="searchText" [(ngModel)]="searchText" maxlength="60" name="searchText" readonly>
+                        <span class="input-group-append">
+                            <button class="btn btn-outline-secondary" id="searchButton" type="button" (click)="searchProject()">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-2 text-right">
+                        <label class="col-form-label text-right">Sort By &nbsp;&nbsp;&nbsp;</label>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" id="sortStartDate" class="btn btn-primary task-btn-primary" (click)="sortBy('startDate')">Start Date</button>&nbsp;</div>
+                    <div class="col-2">
+                        <button type="button" id="sortEndDate" class="btn btn-primary task-btn-primary" (click)="sortBy('endDate')">End Date</button>&nbsp;</div>
+                    <div class="col-2">
+                        <button type="button" id="sortPriority" class="btn btn-primary task-btn-primary" (click)="sortBy('priority')">Priority</button>&nbsp;</div>
+                    <div class="col-2">
+                        <button type="button" id="sortStatus" class="btn btn-primary task-btn-primary float-right" (click)="sortBy('status')">Completed</button>&nbsp;</div>
+                </div>
+            </div>
+        </div>
+        <div [hidden]="erroMessage === ''" class="alert alert-danger col-11">
+            {{erroMessage}}
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-12">
+            <hr class="dotted-hr" />
+        </div>
+    </div>
+    <div>
+        <table class="table borderless task-table">
+            <tbody *ngFor="let task of (tasks | taskSearch : searchText | taskSort : sortingType : sortOrder) let i=index">
+                <tr *ngIf="i !== 0">
+                    <th colspan="6" class="p-0">
+                        <hr class="dotted-hr" />
+                    </th>
+                </tr>
+                <tr>
+                    <th class="pt-0 pb-0">Task name</th>
+                    <th class="pt-0 pb-0">Parent</th>
+                    <th class="pt-0 pb-0">Priority</th>
+                    <th class="pt-0 pb-0">Start Date</th>
+                    <th class="pt-0 pb-0">End Date</th>
+                    <th class="pt-0 pb-0">&nbsp;</th>
+                </tr>
+
+                <tr>
+                    <td class="task-column" [ngClass]="{'task_disabled': task.status === '1', 'task-column_enable' : task.status != '1'}">{{ task.taskName }}</td>
+                    <td class="task-column" [ngClass]="{'task_disabled': task.status === '1', 'task-column_enable' : task.status != '1'}">{{ (task.parentTask) ? task.parentTask.parentName : 'No Parent for this task' }}</td>
+                    <td [ngClass]="{'task_disabled': task.status === '1'}">{{ task.priority }}</td>
+                    <td [ngClass]="{'task_disabled': task.status === '1'}">{{ task.startDate }}</td>
+                    <td [ngClass]="{'task_disabled': task.status === '1'}">{{ task.endDate }}</td>
+                    <td>
+                            <span *ngIf="task.status === 1" class="badge badge-info">Completed</span>
+                        <a *ngIf="task.status !== 1" routerLink="/editTask/{{task.taskId}}" class="btn task-btn-primary btn-sm">Edit</a>&nbsp;&nbsp;
+                        <button *ngIf="task.status !== 1" type="button" class="btn task-btn-danger btn-sm endTaskButton" (click)="disableTask(task)">End Task</button>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!tasks ||  tasks.length === 0">No Tasks</div>
+</div>

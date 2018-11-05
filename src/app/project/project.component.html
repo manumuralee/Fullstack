@@ -1,0 +1,165 @@
+<div [hidden]="submitted" class="pb-2">
+  <form name="form" (ngSubmit)="projectForm.form.valid && onSubmit()" #projectForm="ngForm" novalidate>
+    <div class="form-group row alertBox" *ngIf="successFlag > 0">
+      <div [hidden]="successFlag !== 1" class="alert alert-success col-11">
+        {{successMessage}}
+      </div>
+      <div [hidden]="successFlag !== 2" class="alert alert-danger col-11">
+        {{successMessage}}
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="projectName" class="col-2 col-form-label">Project</label>
+      <div class="col-6">
+        <input type="text" class="form-control" id="projectName" [(ngModel)]="model.projectName" maxlength="60" name="projectName"
+          required #projectName="ngModel" [ngClass]="{ 'is-invalid': projectForm.submitted && projectName.invalid }">
+        <!--div [hidden]="projectName.valid || projectName.pristine" class="alert alert-danger">
+            Name is required
+          </div-->
+        <div *ngIf="projectForm.submitted && projectName.invalid" class="invalid-feedback">
+          <div *ngIf="projectName.errors.required">First Name is required</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="checkDate" class="col-2 col-form-label">&nbsp;</label>
+      <div class="col-2 ml-3 mr-1 pt-2 pb-1 pr-0 pl-0">
+        <label>
+          <input type="checkbox" #isCheckDate="ngModel" name="checkDate" class="checkbox" id="checkDate" [(ngModel)]="checkDate" (ngModelChange)="oncheckDateChange(checkDate ? true : false)"> Set Start and End Date</label>
+      </div>
+      <div class="col-2 pl-2 pr-2">
+        <label class="sr-only" for="startDate">Start Date</label>
+        <input type="date" class="form-control project-input-date p-1" id="startDate" [(ngModel)]="iStartDate" name="iStartDate"
+          required #startDate="ngModel" [ngClass]="{ 'is-invalid': projectForm.submitted && startDate.invalid }" [disabled]="isCheckDate.value ? false : true"
+          value="{{iStartDate}}">
+        <div *ngIf="isCheckDate.value && projectForm.submitted && startDate.invalid" class="invalid-feedback ">
+          <div *ngIf="startDate.errors.required">Start Date is required</div>
+          <div *ngIf="endDate.errors.minlength">Invalid Date</div>
+          <div *ngIf="endDate.errors.maxlength">Invalid Date</div>
+        </div>
+      </div>
+      <div class="col-2 pl-0 pr-3">
+        <label class="sr-only" for="endDate">End Date</label>
+        <input type="date" class="form-control project-input-date p-1" id="endDate" [(ngModel)]="iEndDate" name="iEndDate" required
+          #endDate="ngModel" min="{{projectForm.value.startDate}}" [ngClass]="{ 'is-invalid': projectForm.submitted && endDate.invalid }"
+          [disabled]="isCheckDate.value ? false : true" value="{{iEndDate}}">
+        <div *ngIf="isCheckDate.value && projectForm.submitted && endDate.invalid" class="invalid-feedback">
+          <div *ngIf="endDate.errors.required"> End Date is required</div>
+          <div *ngIf="endDate.errors.minlength">Invalid Date</div>
+          <div *ngIf="endDate.errors.maxlength">Invalid Date</div>
+          <div *ngIf="endDate.errors.min">Lower than Start Date</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="form-group row">
+      <label for="priority" class="col-2 col-form-label">Priority</label>
+      <div class="col-6">
+        <div>
+          <div class="float-left">0</div>
+          <div class="float-right">30</div>
+        </div>
+        <input type="range" min="0" max="30" class="form-control" id="priority" [(ngModel)]="model.priority" name="priority" required
+          #priority="ngModel" [ngClass]="{ 'is-invalid': projectForm.submitted && priority.invalid }">
+        <!--div [hidden]="priority.valid || priority.pristine" class="alert alert-danger">
+            Priority is required
+          </div-->
+        <div *ngIf="projectForm.submitted && priority.invalid" class="invalid-feedback">
+          <div *ngIf="priority.errors.required">Priority is required</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="employeeId" class="col-2 col-form-label">Manager</label>
+      <div class="input-group col-6">
+        <input class="form-control py-2" type="search" value="" id="selectedUserName" name="selectedUserName" [(ngModel)]="selectedUserName"
+          readonly>
+        <span class="input-group-append">
+          <button id="searchUserButton" class="btn btn-outline-secondary" type="button" (click)="searchUser()">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <div class="pt-4">
+      <button *ngIf="!editMode" type="submit" class="btn btn-primary task-btn-primary" id="SubmitVal">Submit</button>&nbsp;
+      <button *ngIf="editMode" id="updateButton" type="submit" class="btn btn-primary task-btn-primary">Update</button>&nbsp;
+      <button type="button" id="resetButton" class="btn btn-default" (click)="newProject(); projectForm.reset()">Reset</button>
+    </div>
+  </form>
+</div>
+<div class="row pb-2 pt-2">
+  <div class="col-8">
+    <hr class="normal-hr" />
+  </div>
+</div>
+<div class="pt-2">
+  <div class="row pt-2 pb-4">
+    <div class="col-8">
+      <input type="text" class="form-control" id="searchText" [(ngModel)]="searchText" maxlength="60" name="searchText" placeholder="Search">
+    </div>
+  </div>
+  <div class="row pt-2 pb-2">
+    <div class="col-8">
+      <div class="row">
+        <div class="col-4">
+          <label class="col-form-label pr-5">Sort By &nbsp;&nbsp;&nbsp;</label>
+        </div>
+        <div class="col-2">
+          <button type="button" id="sortStartDate" class="btn btn-primary task-btn-primary" (click)="sortBy('startDate')">Start Date</button>&nbsp;</div>
+        <div class="col-2">
+          <button type="button" id="sortEndDate" class="btn btn-primary task-btn-primary" (click)="sortBy('endDate')">End Date</button>&nbsp;</div>
+        <div class="col-2">
+          <button type="button" id="sortPriority" class="btn btn-primary task-btn-primary" (click)="sortBy('priority')">Priority</button>&nbsp;</div>
+        <div class="col-2">
+          <button type="button" id="sortStatus" class="btn btn-primary task-btn-primary float-right" (click)="sortBy('status')">Completed</button>&nbsp;</div>
+      </div>
+    </div>
+  </div>
+  <div *ngFor="let project of (projects | projectSearch : searchText | projectSort : sortingType : sortOrder) let i=index">
+    <div class="row pt-2">
+      <div class="col-6 ">
+        <div class="row p-2 bg-light-1">
+          <div class="col-12 ">Project: {{project.projectName}}
+            <span *ngIf="project.status === 1" class="badge badge-info">Suspended</span>
+          </div>
+        </div>
+        <div class="row p-2 bg-light-1">
+          <div class="col-6">No of Tasks: {{project.taskCount}}</div>
+          <div class="col-6">Completed: {{project.closedTaskCount}}</div>
+        </div>
+        <div class="row p-1 bg-light-1">
+          <div class="col-6">Start Date: {{project.startDate}}</div>
+          <div class="col-6">End Date: {{project.endDate}}</div>
+        </div>
+      </div>
+      <div class="col-2 ">
+        <div class="row pl-2 ">
+          <div class="col-6 bg-white">Priority</div>
+          <div class="col-6 pl-2 pb-1 float-right">
+            <button *ngIf="project.status !== 1" type="button pl-0 pr-0" class="btn btn-primary task-btn-primary btn-sm editButton" (click)="editProject($event, project, i)">&nbsp;Update&nbsp;</button>
+          </div>
+        </div>
+        <div class="row pl-2 pt-1">
+          <div class="col-6 pt-3 bg-light-1 text-center align-middle">{{project.priority}}</div>
+          <div class="col-6 pl-2 pt-1 float-right">
+            <button *ngIf="project.status !== 1" type="button" class="btn project-btn-danger btn-sm buttonSuspend" (click)="suspendProject(project)">Suspend</button>
+          </div>
+        </div>
+        <div class="row pl-2">
+          <div class="col-6 pb-2 bg-light-1 text-center">&nbsp;</div>
+          <div class="col-6 pl-1 ">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row pt-2">
+      <div class="col-8">
+        <hr class="dotted-hr" />
+      </div>
+    </div>
+  </div>
+</div>

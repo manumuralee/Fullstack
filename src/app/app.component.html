@@ -1,0 +1,16 @@
+<div class="container">
+  <h1>
+    Project Manager
+  </h1>
+  <nav>
+    <a [routerLinkActive]="['active']" routerLink="/addProject">Add Project</a>
+    <a [routerLinkActive]="['active']" routerLink="/addTask">Add Tasks</a>
+    <a [routerLinkActive]="['active']" routerLink="/addUser">Add User</a>
+    <a [routerLinkActive]="['active']" routerLink="/viewTasks">View Tasks</a>
+  </nav>
+</div>
+<div class="container">
+  <div class="project-body">
+    <router-outlet></router-outlet>   
+  </div>
+</div>

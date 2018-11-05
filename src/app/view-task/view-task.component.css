@@ -1,0 +1,65 @@
+
+.task_disabled {
+    background-color: #e9edef7d !important;
+    word-wrap: break-word;
+}
+
+.task_disabled {
+    background-color: #e9edef7d !important;
+    word-wrap: break-word;
+}
+
+.task-column {  
+    height: 80px;   
+    padding: 10px;       
+}
+
+.task-column_enable {
+    background-color: #eef1f3;    
+    word-wrap: break-word;   
+    border: 10px solid #fff !important; 
+     
+}
+
+.task-btn-primary {
+    color: #fff;
+    background-color: #3d6794 !important;    
+}
+
+.task-btn-primary a:visited, a:link {
+    color: #fff !important;
+}
+
+.task-btn-danger {
+    color: #fff;
+    background-color: #a57d81 !important;
+    border-color: #a57d81 !important;
+}
+
+.normal-hr {
+    border:none;
+    border-top:2px solid #6c757d !important;
+    color:#fff;
+    background-color:#fff;
+    height:1px;   
+  }
+
+  .dotted-hr {
+    border:none;
+    border-top:2px dotted #6c757d !important;
+    color:#fff;
+    background-color:#fff;
+    height:1px;    
+  }
+
+  .borderless td, .borderless th {
+    border: none;
+  }
+
+  .task-table tbody+tbody {    
+    border-top: 2px #fff !important;
+ }
+
+ .task-table td, .task-table th {
+    vertical-align: middle;
+ }
